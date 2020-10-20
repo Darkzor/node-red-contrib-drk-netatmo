@@ -1,0 +1,690 @@
+<script type="text/javascript">
+    console.log("registering netatmo config node");
+        RED.nodes.registerType('configNode',{
+            category: 'config',
+            defaults: {
+                client_id: {value:"",required:true},
+                client_secret: {value:"",required:true},
+                username: {value:"",required:false},
+                password: {value:"",require:false},
+                code: {value:"",required:false},
+            },
+            label: function() {
+                return "Client ID: "+this.client_id;
+            }
+        });
+</script>
+
+<script type="text/x-red" data-template-name="configNode">
+    <div class="form-row">
+        <label for="node-config-input-client_id"><i class="icon-tag"></i> Client ID</label>
+        <input type="text" id="node-config-input-client_id" placeholder="56e984c449c7...">
+    </div>
+   <div class="form-row">
+        <label for="node-config-input-client_secret"><i class="icon-tag"></i> Client Secret</label>
+        <input type="text" id="node-config-input-client_secret" placeholder="X4l1Ct9G....">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="icon-tag"></i> Username</label>
+        <input type="text" id="node-config-input-username" placeholder="Username">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="icon-tag"></i> Password</label>
+        <input type="text" id="node-config-input-password" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-code"><i class="icon-tag"></i> Code</label>
+        <input type="text" id="node-config-input-code" placeholder="">
+    </div>
+</script>
+
+<script type="text/javascript">
+    console.log("registering netatmo get home data");
+    RED.nodes.registerType('get home data',{
+        category: 'Netatmo',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            home_id: {value:""},
+            creds: {value:"",type:"configNode"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get home data";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get home data">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-home_id"><i class="icon-tag"></i> Home ID</label>
+        <input type="text" id="node-input-home_id" placeholder="Home ID">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get home data">
+   <p>This node returns information about the netatmo welcome home data.</p>
+   <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+   <p>Accepts an optional home_id parameter.</p>
+   <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+   <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+   <b>msg.payload</b>. msg.payload is JSON.</p>
+   <p>See <a href="https://dev.netatmo.com/apidocumentation/security#gethomedata" target=_blank>https://dev.netatmo.com/apidocumentation/security#gethomedata</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get public data");
+    RED.nodes.registerType('get public data',{
+        category: 'Netatmo Weather',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            lat_ne: {value:""},
+            lon_ne: {value:""},
+            lat_sw: {value:""},
+            lon_sw: {value:""},
+            required_data: {value:""},
+            filter: {value:false}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get public data";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get public data">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lat_ne"><i class="icon-tag"></i> Latitude NE</label>
+        <input type="text" id="node-input-lat_ne" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lon_ne"><i class="icon-tag"></i> Longitude NE</label>
+        <input type="text" id="node-input-lon_ne" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lat_sw"><i class="icon-tag"></i> Latitude SW</label>
+        <input type="text" id="node-input-lat_sw" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lon_sw"><i class="icon-tag"></i> Longitude SW</label>
+        <input type="text" id="node-input-lon_sw" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-required_data"><i class="icon-tag"></i> Required data</label>
+        <input type="text" id="node-input-required_data" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-filter"><i class="icon-tag"></i> Filter</label>
+        <input type="checkbox" id="node-input-filter">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get public data">
+    <p>This node returns information about the netatmo welcome home data.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires lat_ne, lon_ne, lat_sw and lon_sw parameters.</p>
+    <p>Accepts optional required_data and filter parameters.</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/weather#getpublicdata" target=_blank>https://dev.netatmo.com/apidocumentation/weather#getpublicdata</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get stations data");
+    RED.nodes.registerType('get stations data',{
+        category: 'Netatmo Weather',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            device_id: {value:""},
+            get_favorites: {value:false}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get stations data";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get stations data">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-device_id"><i class="icon-tag"></i> Device ID</label>
+        <input type="text" id="node-input-device_id" placeholder="XX:XX:XX:XX:XX:XX">
+    </div>
+    <div class="form-row">
+        <label for="node-input-get_favorites"><i class="icon-tag"></i> Get favorites</label>
+        <input type="checkbox" id="node-input-get_favorites">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get stations data">
+    <p>Returns data from a user Weather Stations (measures and device specific data).</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Accepts optional device_id and get_favorites parameters.</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/weather#getstationsdata" target=_blank>https://dev.netatmo.com/apidocumentation/weather#getstationsdata</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get measure");
+    RED.nodes.registerType('get measure',{
+        category: 'Netatmo Weather',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            device_id: {value:""},
+            module_id: {value:""},
+            scale: {value:""},
+            type: {value:""},
+            date_begin: {value:""},
+            date_end: {value:""},
+            limit: {value:""},
+            optimize: {value:""},
+            real_time: {value:""},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get measure";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get measure">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-device_id"><i class="icon-tag"></i> Device ID</label>
+        <input type="text" id="node-input-device_id" placeholder="XX:XX:XX:XX:XX:XX">
+    </div>
+    <div class="form-row">
+        <label for="node-input-module_id"><i class="icon-tag"></i> Module ID</label>
+        <input type="text" id="node-input-module_id" placeholder="XX:XX:XX:XX:XX:XX">
+    </div>
+    <div class="form-row">
+        <label for="node-input-scale"><i class="icon-tag"></i> Scale</label>
+        <input type="text" id="node-input-scale" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-type"><i class="icon-tag"></i> Type</label>
+        <input type="text" id="node-input-type" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-date_begin"><i class="icon-tag"></i> Date begin</label>
+        <input type="text" id="node-input-date_begin" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-date_end"><i class="icon-tag"></i> Date end</label>
+        <input type="text" id="node-input-date_end" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-limit"><i class="icon-tag"></i> Limit</label>
+        <input type="text" id="node-input-limit" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-optimize"><i class="icon-tag"></i> Optimize</label>
+        <input type="checkbox" id="node-input-device_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-real_time"><i class="icon-tag"></i> Real time</label>
+        <input type="text" id="node-input-real_time" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get measure">
+    <p>Retrieve date from a device or module.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires device_id, scale and type parameters</p>
+    <p>Accepts optional module_id, date_begin, date_end, limit, optimize and real_time parameters.</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/weather#getmeasure" target=_blank>https://dev.netatmo.com/apidocumentation/weather#getmeasure</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get events until");
+    RED.nodes.registerType('get events until',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            home_id: {value:""},
+            event_id: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get events until";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get events until">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-home_id"><i class="icon-tag"></i> Home ID</label>
+        <input type="text" id="node-input-home_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-event_id"><i class="icon-tag"></i> Event ID</label>
+        <input type="text" id="node-input-event_id" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get events until">
+    <p>Returns all the events until the one specified in the request. This method is available for Welcome, Presence and the Smart Smoke Alarm.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires home_id and event_id parameters</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#geteventsuntil" target=_blank>https://dev.netatmo.com/apidocumentation/security#geteventsuntil</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get last event of");
+    RED.nodes.registerType('get last event of',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            home_id: {value:""},
+            person_id: {value:""},
+            offset: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get last event of";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get last event of">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-home_id"><i class="icon-tag"></i> Home ID</label>
+        <input type="text" id="node-input-home_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-event_id"><i class="icon-tag"></i> Person ID</label>
+        <input type="text" id="node-input-person_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-event_id"><i class="icon-tag"></i> Offset</label>
+        <input type="text" id="node-input-offset" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get last event of">
+    <p>Returns most recent events. This method is only available for Welcome.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires home_id and person_id parameters</p>
+    <p>Accepts an optional offset parameter</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#getlasteventof" target=_blank>https://dev.netatmo.com/apidocumentation/security#getlasteventof</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get next events");
+    RED.nodes.registerType('get next events',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            home_id: {value:""},
+            event_id: {value:""},
+            size: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get next events";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get next events">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-home_id"><i class="icon-tag"></i> Home ID</label>
+        <input type="text" id="node-input-home_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-event_id"><i class="icon-tag"></i> Event ID</label>
+        <input type="text" id="node-input-event_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-size"><i class="icon-tag"></i> Size</label>
+        <input type="text" id="node-input-size" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get next events">
+    <p>Returns previous events. This method is available for Welcome, Presence and the Smart Smoke Alarm</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires home_id and event_id parameters</p>
+    <p>Accepts an optional size parameter</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#getnextevents" target=_blank>https://dev.netatmo.com/apidocumentation/security#getnextevents</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo get camera picture");
+    RED.nodes.registerType('get camera picture',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            image_id: {value:""},
+            key: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"get camera picture";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get camera picture">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-image_id"><i class="icon-tag"></i> Image ID</label>
+        <input type="text" id="node-input-image_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-key"><i class="icon-tag"></i> Key</label>
+        <input type="text" id="node-input-key" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="get camera picture">
+    <p>Returns the snapshot associated with an event</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires image_id and key parameters</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is binary.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#getcamerapicture" target=_blank>https://dev.netatmo.com/apidocumentation/security#getcamerapicture</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo set persons away");
+    RED.nodes.registerType('set persons away',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            home_id: {value:""},
+            person_id: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"set persons away";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="set persons away">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-home_id"><i class="icon-tag"></i> Home ID</label>
+        <input type="text" id="node-input-home_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-person_id"><i class="icon-tag"></i> Person ID</label>
+        <input type="text" id="node-input-person_id" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="set persons away">
+    <p>Sets a person as "Away" or the Home as "Empty". The event will be added to the user’s timeline. This method is only available for Welcome.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires the home_id parameter</p>
+    <p>Accepts an optional person_id parameter.</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#setpersonsaway" target=_blank>https://dev.netatmo.com/apidocumentation/security#setpersonsaway</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo set persons home");
+    RED.nodes.registerType('set persons home',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            home_id: {value:""},
+            person_ids: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"set persons home";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="set persons home">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-home_id"><i class="icon-tag"></i> Home ID</label>
+        <input type="text" id="node-input-home_id" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-person_ids"><i class="icon-tag"></i> Person IDS</label>
+        <input type="text" id="node-input-person_id" placeholder="" class="disabled">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="set persons home">
+    <p>Sets a person or a group of person "at home". The event will be added to the user’s timeline.  This method is only available for Welcome.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires the home_id parameter</p>
+    <p>Accepts an optional person_ids parameter. Currently you should use msg.person_ids to send an array to this node.</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#setpersonshome" target=_blank>https://dev.netatmo.com/apidocumentation/security#setpersonshome</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo add webhook");
+    RED.nodes.registerType('add webhook',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+            url: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"add webhook";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="add webhook">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-url"><i class="icon-tag"></i> URL</label>
+        <input type="text" id="node-input-url" placeholder="">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="add webhook">
+    <p>Links a callback url to a user. This method is available for Security products.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>Requires an URL parameter</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#addwebhook" target=_blank>https://dev.netatmo.com/apidocumentation/security#addwebhook</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->
+
+<script type="text/javascript">
+    console.log("registering netatmo drop webhook");
+    RED.nodes.registerType('drop webhook',{
+        category: 'Netatmo Security',
+        color: '#669966',
+        defaults: {
+            name: {value:""},
+            creds: {value:"",type:"configNode"},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "feed.png",
+        label: function() {
+            return this.name||"drop webhook";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="drop webhook">
+    <div class="form-row">
+        <label for="node-input-creds"><i class="icon-tag"></i> Creds</label>
+        <input type="text" id="node-input-creds" placeholder="Add netatmo creds">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="drop webhook">
+    <p>Drops the callback url. This method is available for Security products.</p>
+    <p>Dynamic user authentication is done by passing either username and password pair or code to the node.</p>
+    <p>This node takes no custom parameters outside of authentication</p>
+    <p>All parameters can be sent to this node as msg.parameter (ie msg.username).</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is JSON.</p>
+    <p>See <a href="https://dev.netatmo.com/apidocumentation/security#dropwebhook" target=_blank>https://dev.netatmo.com/apidocumentation/security#dropwebhook</a> for details on format</p>
+</script>
+<!-- *************************************************************  -->

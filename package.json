@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-drk-netatmo",
+  "version": "0.1.0",
+  "description": "NodeRed implementation of the Netatmo API",
+  "main": "netatmoNodes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Darkzor/node-red-contrib-drk-netatmo.git"
+  },
+  "keywords": [
+    "nodered",
+    "netatmo",
+    "api"
+  ],
+  "author": "Radu Oprisan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Darkzor/node-red-contrib-drk-netatmo/issues"
+  },
+  "homepage": "https://github.com/Darkzor/node-red-contrib-drk-netatmo#readme",
+  "dependencies": {
+    "@Darkzor/drk-netatmo": "0.1.0"
+  },
+  "node-red": {
+    "nodes": {
+      "netatmo": "netatmoNodes.js"
+    }
+  }
+}
