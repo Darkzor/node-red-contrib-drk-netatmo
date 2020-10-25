@@ -320,5 +320,248 @@ module.exports = function(RED) {
         }
     }
     RED.nodes.registerType("drop webhook",NetatmoDropWebhook);
+
+    class NetatmoHomesData {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'gateway_types'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.homesData(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("homes data",NetatmoHomesData);
+
+    class NetatmoHomeStatus {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'device_types'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.homeStatus(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("home status",NetatmoHomeStatus);
+
+    class NetatmoCreateNewHomeSchedule {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'timetable', 'zone', 'name', 'hg_temp', 'away_temp'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.createNewHomeSchedule(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("create new home schedule",NetatmoCreateNewHomeSchedule);
+
+    class NetatmoDeleteHomeSchedule {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'schedule_id'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.deleteHomeSchedule(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("delete home schedule",NetatmoDeleteHomeSchedule);
+
+    class NetatmoRenameHomeSchedule {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'schedule_id', 'name'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.renameHomeSchedule(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("rename home schedule",NetatmoRenameHomeSchedule);
+
+    class NetatmoSyncHomeSchedule {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'zones', 'timetable', 'hg_temp', 'away_temp'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.syncHomeSchedule(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("sync home schedule",NetatmoSyncHomeSchedule);
+
+    class NetatmoSwitchHomeSchedule {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'schedule_id'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.switchHomeSchedule(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("switch home schedule",NetatmoSwitchHomeSchedule);
+
+
+    class NetatmoGetRoomMeasure {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'room_id', 'scale', 'type', 'date_begin', 'date_end', 'limit', 'optimize', 'real_time'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.getRoomMeasure(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("get room measure",NetatmoGetRoomMeasure);
+
+    class NetatmoSetRoomThermPoint {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'room_id', 'mode', 'temp', 'endtime'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.setRoomThermPoint(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("set room therm point",NetatmoSetRoomThermPoint);
+
+    class NetatmoSetThemMode {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['home_id', 'mode', 'endtime', 'schedule_id'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.setThermMode(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("set them mode",NetatmoSetThemMode);
+
+    class NetatmoGetHomeCoachsData {
+        constructor(config) {
+            RED.nodes.createNode(this, config);
+            var node = this;
+            this.on('input', function (msg) {
+                var params = ['device_id'];
+                var api = NetatmoGetNetatmoObject(config, msg, node);
+
+                var data = {};
+                params.forEach(function(element) {
+                    data[element] = msg[element] ? msg[element] : config[element];
+                    if(!data[element]) delete data[element];
+                })
+                api.getHomeCoachsData(data, function (err, data) {
+                    msg.payload = data;
+                    node.send(msg);
+                });
+            });
+        }
+    }
+    RED.nodes.registerType("get home coachs data",NetatmoGetHomeCoachsData);
 }
 
